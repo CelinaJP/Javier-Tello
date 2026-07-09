@@ -63,12 +63,48 @@
 
         /* Testimonial Cards */
         .testimonial-card { position: relative; overflow: hidden; }
+        .testimonial-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transform: translateY(1.5rem);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .testimonial-slide.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .testimonial-dot {
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 9999px;
+            background: rgba(229,228,226,0.35);
+            border: 1px solid rgba(212,175,55,0.2);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        .testimonial-dot.active {
+            background: #F0C422;
+            transform: scale(1.15);
+        }
+        .testimonial-dot:hover {
+            background: #D4AF37;
+        }
 
         /* Modal video */
         .modal-overlay {
             position: fixed; inset: 0; z-index: 60;
             background: rgba(0,0,0,0.92); backdrop-filter: blur(6px);
-            display: none; align-items: center; justify-content: center;
+             <div class="text-center mb-12 sm:mb-16" data-aos="fade-up">
+                <p class="text-gold-400 font-semibold tracking-wide uppercase text-xs sm:text-sm mb-2">PROYECTOS</p>
+                <h3 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white">Proyectos</h3>
+                <div class="w-16 sm:w-20 h-1 bg-gradient-to-r from-gold-600 to-gold-400 mx-auto mt-4 rounded-full"></div>
+            </div>
+            <div class="text-center sm:text-left mb-10" data-aos="fade-up">
+                <p class="text-gold-400 font-semibold tracking-wide uppercase text-xs sm:text-sm mb-2">VIDEOS VERTICALES</p>
+                <h4 class="text-xl sm:text-2xl font-bold text-white">Contenido vertical.</h4>
+                <p class="text-silver-400 mt-3 text-sm sm:text-base max-w-2xl mx-auto">Una sección aparte para mostrar contenidos verticales con formato 9:16, ideal para redes sociales como Instagram Reels y TikTok.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">           display: none; align-items: center; justify-content: center;
         }
         .modal-overlay.open { display: flex; }
         .modal-inner { position: relative; width: 100%; max-width: 900px; padding: 0 16px; }
@@ -85,6 +121,51 @@
         .modal-close:hover { color: #D4AF37; }
 
         .nav-scrolled { background: rgba(10,10,10,0.95); backdrop-filter: blur(20px); box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
+        #navbar { background: rgba(10,10,10,0.82); backdrop-filter: blur(22px); border-color: rgba(255,255,255,0.08); }
+        #navbar .nav-link {
+            position: relative;
+            color: #E5E4E2;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            transition: color 200ms ease, transform 200ms ease;
+        }
+        #navbar .nav-link::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background: #F0C422;
+            transition: width 200ms ease, left 200ms ease;
+            border-radius: 999px;
+        }
+        #navbar .nav-link:hover {
+            color: #F0C422;
+            transform: translateY(-1px);
+        }
+        #navbar .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+        #navbar .contact-button {
+            border-radius: 9999px;
+            padding: 0.8rem 1.5rem;
+            min-width: 170px;
+            box-shadow: 0 18px 40px rgba(212,175,55,0.18);
+        }
+        #navbar .contact-button:hover {
+            transform: translateY(-1px);
+        }
+        @media (max-width: 768px) {
+            #navbar .nav-link {
+                padding: 0.9rem 1rem;
+                display: block;
+            }
+            #navbar .contact-button {
+                width: 100%;
+            }
+        }
         .btn-glow { position: relative; overflow: hidden; }
         .btn-glow::after {
             content: ''; position: absolute; top: -50%; left: -50%;
@@ -112,9 +193,9 @@
                     <span class="hidden sm:inline">JAVIER</span><span class="text-gold-400">TELLO</span>
                 </a>
                 <div class="hidden md:flex items-baseline space-x-1">
-                    <a href="#sobre-mi"    class="hover:text-gold-400 transition-colors px-4 py-2 rounded-md text-sm font-medium silver-text">Sobre mí</a>
-                    <a href="#testimonios" class="hover:text-gold-400 transition-colors px-4 py-2 rounded-md text-sm font-medium silver-text">Testimonios</a>
-                    <a href="#trabajos" class="hover:text-gold-400 transition-colors px-4 py-2 rounded-md text-sm font-medium silver-text">Trabajos</a>
+                    <a href="#sobre-mi"    class="nav-link hover:text-gold-400 transition-colors px-4 py-2 rounded-md text-sm font-medium silver-text">Sobre mí</a>
+                    <a href="#testimonios" class="nav-link hover:text-gold-400 transition-colors px-4 py-2 rounded-md text-sm font-medium silver-text">Testimonios</a>
+                    <a href="#proyectos" class="nav-link hover:text-gold-400 transition-colors px-4 py-2 rounded-md text-sm font-medium silver-text">Proyectos</a>
 
                     <!-- Dropdown Servicios -->
                     <div class="relative group">
@@ -137,7 +218,7 @@
                         </div>
                     </div>
 
-                    <a href="https://wa.me/5491151390671?text=Hola%20Javier!%20Quiero%20contratar" target="_blank" class="btn-glow bg-gradient-to-r from-gold-600 to-gold-400 hover:from-gold-500 hover:to-gold-300 text-black px-5 py-2.5 rounded-full text-sm font-bold transition-all shadow-lg shadow-gold-500/30 ml-2">Contactame</a>
+                    <a href="https://wa.me/5491151390671?text=Hola%20Javier!%20Quiero%20contratar" target="_blank" class="contact-button btn-glow bg-gradient-to-r from-gold-600 to-gold-400 hover:from-gold-500 hover:to-gold-300 text-black px-5 py-2.5 rounded-full text-sm font-bold transition-all shadow-lg shadow-gold-500/30 ml-2">Contáctame</a>
                 </div>
                 <div class="-mr-2 flex md:hidden">
                     <button type="button" onclick="toggleMobileMenu()" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gold-400 transition-all">
@@ -150,7 +231,7 @@
             <div class="px-4 pt-4 pb-6 space-y-2">
                 <a href="#sobre-mi"    onclick="toggleMobileMenu()" class="text-gray-300 hover:text-gold-400 block px-4 py-3 rounded-lg text-base font-medium transition-all hover:bg-dark-700"><i class="fa-solid fa-user mr-3 text-gold-400"></i>Sobre mí</a>
                 <a href="#testimonios" onclick="toggleMobileMenu()" class="text-gray-300 hover:text-gold-400 block px-4 py-3 rounded-lg text-base font-medium transition-all hover:bg-dark-700"><i class="fa-solid fa-comments mr-3 text-gold-400"></i>Testimonios</a>
-                <a href="#trabajos" onclick="toggleMobileMenu()" class="text-gray-300 hover:text-gold-400 block px-4 py-3 rounded-lg text-base font-medium transition-all hover:bg-dark-700"><i class="fa-solid fa-briefcase mr-3 text-gold-400"></i>Trabajos</a>
+                <a href="#proyectos" onclick="toggleMobileMenu()" class="nav-link text-gray-300 hover:text-gold-400 block px-4 py-3 rounded-lg text-base font-medium transition-all hover:bg-dark-700"><i class="fa-solid fa-briefcase mr-3 text-gold-400"></i>Proyectos</a>
 
                 <!-- Servicios con sub-ítems -->
                 <div>
@@ -474,13 +555,18 @@
         </div>
     </section>
 
-    <!-- Trabajos -->
-    <section id="trabajos" class="py-16 sm:py-20 md:py-28 bg-dark-900">
+    <!-- Proyectos -->
+    <section id="proyectos" class="py-16 sm:py-20 md:py-28 bg-dark-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12 sm:mb-16" data-aos="fade-up">
-                <p class="text-gold-400 font-semibold tracking-wide uppercase text-xs sm:text-sm mb-2">Trabajos</p>
-                <h3 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white">Proyectos destacados</h3>
+                <p class="text-gold-400 font-semibold tracking-wide uppercase text-xs sm:text-sm mb-2">PROYECTOS</p>
+                <h3 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white">Proyectos</h3>
                 <div class="w-16 sm:w-20 h-1 bg-gradient-to-r from-gold-600 to-gold-400 mx-auto mt-4 rounded-full"></div>
+            </div>
+            <div class="text-center sm:text-left mb-10" data-aos="fade-up">
+                <p class="text-gold-400 font-semibold tracking-wide uppercase text-xs sm:text-sm mb-2">VIDEOS VERTICALES</p>
+                <h4 class="text-xl sm:text-2xl font-bold text-white">Contenido vertical.</h4>
+                <p class="text-silver-400 mt-3 text-sm sm:text-base max-w-2xl mx-auto">Una sección aparte para mostrar contenidos verticales con formato 9:16, ideal para redes sociales como Instagram Reels y TikTok.</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
                 <div class="glass-card rounded-3xl overflow-hidden border border-silver-600/20 bg-black/80" data-aos="fade-up" data-aos-delay="100">
