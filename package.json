@@ -1,0 +1,13 @@
+{
+  "name": "javier-tello-landing",
+  "version": "1.0.0",
+  "description": "Landing page portfolio de Javier Tello",
+  "main": "javier-tello-landing.html",
+  "scripts": {
+    "start": "serve -s . -l 8000",
+    "dev": "serve -s . -l 8000"
+  },
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}
