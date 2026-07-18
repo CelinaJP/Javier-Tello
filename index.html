@@ -140,12 +140,80 @@
         }
         #navbar .contact-button {
             border-radius: 9999px;
-            padding: 0.8rem 1.5rem;
-            min-width: 170px;
+            padding: 0.75rem 1.2rem;
+            min-width: 150px;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
             box-shadow: 0 18px 40px rgba(212,175,55,0.18);
         }
         #navbar .contact-button:hover {
             transform: translateY(-1px);
+        }
+        .legal-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 90;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+        }
+        .legal-modal.hidden { display: none; }
+        .legal-modal-panel {
+            position: relative;
+            width: min(92vw, 760px);
+            max-height: min(86vh, 860px);
+            overflow-y: auto;
+            border-radius: 24px;
+            border: 1px solid rgba(212,175,55,0.28);
+            background: rgba(18,18,18,0.98);
+            box-shadow: 0 25px 70px rgba(0,0,0,0.45);
+            padding: 1.25rem 1.25rem 1.5rem;
+        }
+        .legal-modal-close {
+            position: sticky;
+            top: 0.5rem;
+            float: right;
+            width: 2.3rem;
+            height: 2.3rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(255,255,255,0.12);
+            color: #fff;
+            background: rgba(255,255,255,0.08);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .legal-modal-content { padding-right: 0.25rem; }
+        .legal-modal-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #F0C422;
+            margin: 0.25rem 0 1rem;
+        }
+        .legal-modal-body p,
+        .legal-modal-body li {
+            color: #e5e7eb;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        .legal-modal-body ul { padding-left: 1.2rem; margin: 0.7rem 0; }
+        .legal-modal-body strong { color: #F4E5B0; }
+        body.modal-open { overflow: hidden; }
+        html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+        @media (max-width: 1024px) {
+            #navbar .contact-button {
+                min-width: 132px;
+                padding: 0.7rem 1rem;
+                font-size: 0.9rem;
+            }
         }
         @media (max-width: 768px) {
             #navbar .nav-link {
@@ -153,7 +221,17 @@
                 display: block;
             }
             #navbar .contact-button {
-                width: 100%;
+                width: auto;
+                min-width: 0;
+                padding: 0.7rem 1rem;
+            }
+            .legal-modal-panel {
+                padding: 1rem;
+                border-radius: 18px;
+            }
+            .legal-modal-title {
+                font-size: 1.2rem;
+                margin-right: 2.8rem;
             }
         }
         .btn-glow { position: relative; overflow: hidden; }
@@ -173,6 +251,13 @@
     </style>
 </head>
 <body class="antialiased scroll-smooth">
+
+    <div id="legal-modal" class="legal-modal hidden" role="dialog" aria-modal="true" aria-labelledby="legal-modal-title" aria-describedby="legal-modal-content">
+        <div class="legal-modal-panel">
+            <button type="button" class="legal-modal-close" aria-label="Cerrar" data-close-modal>&times;</button>
+            <div id="legal-modal-content" class="legal-modal-content"></div>
+        </div>
+    </div>
 
     <!-- Navbar -->
     <nav id="navbar" class="fixed w-full z-50 glass-card border-b border-silver-600/20 transition-all duration-300">
@@ -1094,6 +1179,7 @@
                         <input type="hidden" name="_subject" value="Nuevo mensaje desde el portfolio de Javier Tello">
                         <input type="hidden" name="_captcha" value="false">
                         <input type="hidden" name="_template" value="table">
+                        <input type="hidden" name="_next" value="">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                             <div>
                                 <label class="block text-xs sm:text-sm font-medium text-silver-400 mb-2">Nombre</label>
@@ -1140,7 +1226,10 @@
             </div>
             <div class="border-t border-silver-600/20 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <p class="text-silver-600 text-xs sm:text-sm">© 2026 Javier Tello. Todos los derechos reservados. por <a href="https://porfolio-ce.vercel.app/" target="_blank" class="text-gold-400 hover:text-gold-200">CJP</a></p>
-                <div class="flex space-x-6"><a href="#" class="text-silver-600 hover:text-silver-400 text-xs sm:text-sm">Privacidad</a><a href="#" class="text-silver-600 hover:text-silver-400 text-xs sm:text-sm">Términos</a></div>
+                <div class="flex flex-wrap justify-center gap-4 sm:gap-6">
+                    <a href="#" class="text-silver-600 hover:text-gold-400 transition-colors text-xs sm:text-sm" data-legal-modal="privacy">Privacidad</a>
+                    <a href="#" class="text-silver-600 hover:text-gold-400 transition-colors text-xs sm:text-sm" data-legal-modal="terms">Términos</a>
+                </div>
             </div>
         </div>
     </footer>
@@ -1170,6 +1259,98 @@
             });
         });
 
+        // ─── Legal Modals ───
+        const legalModal = document.getElementById('legal-modal');
+        const legalContent = document.getElementById('legal-modal-content');
+        const legalTexts = {
+            privacy: `
+                <h3 id="legal-modal-title" class="legal-modal-title">Política de Privacidad</h3>
+                <div class="legal-modal-body">
+                    <p><strong>Última actualización:</strong> 10 de julio de 2026</p>
+                    <p>En este sitio web respetamos tu privacidad y nos comprometemos a proteger la información personal que compartas.</p>
+                    <p><strong>Información que recopilamos</strong></p>
+                    <ul>
+                        <li>Nombre.</li>
+                        <li>Correo electrónico.</li>
+                        <li>Número de teléfono (si lo proporcionas).</li>
+                        <li>Información relacionada con tu proyecto.</li>
+                    </ul>
+                    <p><strong>Uso de la información</strong></p>
+                    <ul>
+                        <li>Responder consultas.</li>
+                        <li>Elaborar presupuestos.</li>
+                        <li>Comunicarnos sobre nuestros servicios.</li>
+                        <li>Brindar soporte al cliente.</li>
+                    </ul>
+                    <p><strong>Protección de los datos</strong></p>
+                    <p>Implementamos medidas razonables para proteger tu información y evitar accesos no autorizados.</p>
+                    <p><strong>Compartir información</strong></p>
+                    <p>No vendemos, alquilamos ni compartimos tus datos personales con terceros, salvo cuando sea requerido por la ley.</p>
+                    <p><strong>Cookies</strong></p>
+                    <p>Este sitio puede utilizar cookies para mejorar la experiencia del usuario y obtener estadísticas de navegación.</p>
+                    <p><strong>Derechos del usuario</strong></p>
+                    <p>Puedes solicitar el acceso, modificación o eliminación de tus datos personales escribiéndonos a nuestro correo electrónico.</p>
+                    <p><strong>Contacto</strong></p>
+                    <p>Si tienes dudas sobre esta Política de Privacidad, puedes comunicarte mediante el formulario de contacto o por el correo electrónico indicado en este sitio.</p>
+                    <p><strong>Javii.prod@gmail.com</strong></p>
+                </div>
+            `,
+            terms: `
+                <h3 id="legal-modal-title" class="legal-modal-title">Términos y Condiciones</h3>
+                <div class="legal-modal-body">
+                    <p><strong>Última actualización:</strong> 10 de julio de 2026</p>
+                    <p>Al acceder y utilizar este sitio web aceptas los siguientes términos.</p>
+                    <p><strong>Servicios</strong></p>
+                    <p>Ofrecemos servicios de edición de video para contenido digital, incluyendo Reels, videos de YouTube, VSL y otros formatos.</p>
+                    <p><strong>Presupuestos</strong></p>
+                    <p>Cada proyecto recibe un presupuesto personalizado según su complejidad y requerimientos.</p>
+                    <p><strong>Pagos</strong></p>
+                    <p>El trabajo comenzará una vez confirmado el pago o el anticipo acordado. Las condiciones de pago se establecerán antes de iniciar el proyecto.</p>
+                    <p><strong>Revisiones</strong></p>
+                    <p>La cantidad de revisiones incluidas dependerá del presupuesto aceptado. Cambios adicionales podrán tener un costo extra.</p>
+                    <p><strong>Material proporcionado por el cliente</strong></p>
+                    <p>El cliente garantiza que posee los derechos necesarios sobre todo el contenido enviado para su edición.</p>
+                    <p><strong>Propiedad intelectual</strong></p>
+                    <p>El cliente adquiere el derecho de uso del video final una vez realizado el pago correspondiente. Los archivos editables permanecerán en poder del editor, salvo acuerdo diferente.</p>
+                    <p><strong>Portafolio</strong></p>
+                    <p>Salvo acuerdo de confidencialidad, nos reservamos el derecho de incluir los trabajos realizados en nuestro portafolio y redes sociales.</p>
+                    <p><strong>Responsabilidad</strong></p>
+                    <p>No nos responsabilizamos por retrasos ocasionados por la entrega tardía de materiales, cambios solicitados fuera del alcance del proyecto o fallas de plataformas de terceros.</p>
+                    <p><strong>Modificaciones</strong></p>
+                    <p>Estos términos pueden modificarse en cualquier momento. Los cambios entrarán en vigencia desde su publicación en este sitio.</p>
+                </div>
+            `
+        };
+
+        function openLegalModal(type) {
+            const content = legalTexts[type];
+            if (!content) return;
+            legalContent.innerHTML = content;
+            legalModal.classList.remove('hidden');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeLegalModal() {
+            legalModal.classList.add('hidden');
+            document.body.classList.remove('modal-open');
+            legalContent.innerHTML = '';
+        }
+
+        document.querySelectorAll('[data-legal-modal]').forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                openLegalModal(link.getAttribute('data-legal-modal'));
+            });
+        });
+
+        document.querySelectorAll('[data-close-modal]').forEach(el => {
+            el.addEventListener('click', closeLegalModal);
+        });
+
+        legalModal.addEventListener('click', e => {
+            if (e.target === legalModal) closeLegalModal();
+        });
+
         // ─── Portfolio Modal ───
         function openPortfolioModal(src, title) {}
         function closePortfolioModal(e) {}
@@ -1178,35 +1359,31 @@
 
         // ─── Escape key ───
         document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') _closePortfolioModal();
+            if (e.key === 'Escape') {
+                if (!legalModal.classList.contains('hidden')) {
+                    closeLegalModal();
+                } else {
+                    _closePortfolioModal();
+                }
+            }
         });
 
         // ─── Form ───
         const form = document.getElementById('contact-form');
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            const txt = document.getElementById('btn-text');
-            const spin = document.getElementById('btn-loading');
-            const status = document.getElementById('form-status');
-            txt.classList.add('hidden'); spin.classList.remove('hidden'); btn.disabled = true;
-            try {
-                const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } });
-                if (res.ok) {
-                    status.textContent = '¡Mensaje enviado con éxito! Te contactaré pronto.';
-                    status.className = 'text-center text-sm mt-4 text-gold-400';
-                    form.reset();
-                } else {
-                    status.textContent = 'Hubo un error. Por favor intenta de nuevo.';
-                    status.className = 'text-center text-sm mt-4 text-red-400';
-                }
-            } catch {
-                status.textContent = 'Error de conexión. Verifica tu internet.';
-                status.className = 'text-center text-sm mt-4 text-red-400';
-            } finally {
-                txt.classList.remove('hidden'); spin.classList.add('hidden'); btn.disabled = false;
-                status.classList.remove('hidden');
-            }
+        const status = document.getElementById('form-status');
+
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('enviado') === '1') {
+            status.textContent = '¡Mensaje enviado con éxito! Te responderé pronto.';
+            status.className = 'text-center text-sm mt-4 text-gold-400';
+            status.classList.remove('hidden');
+        }
+
+        form.addEventListener('submit', function() {
+            const nextInput = form.querySelector('input[name="_next"]');
+            const url = new URL(window.location.href);
+            url.searchParams.set('enviado', '1');
+            nextInput.value = url.toString();
         });
     </script>
 </body>
